@@ -70,6 +70,8 @@ function App() {
                         onClose={() => setSelectedCountry(null)}
                     />
                 )}
+
+                <p>dodatkowy test</p>
             </div>
 
 
