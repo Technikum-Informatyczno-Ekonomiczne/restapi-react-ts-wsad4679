@@ -1,63 +1,69 @@
+# React + TypeScript + Vite
 
-# Aplikacja RestApi w React TS
-Stwórz aplikację w React + TypeScript, która pobiera dane z wybranego publicznego API i wyświetla je w formie listy.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Wymagania
-- Pobieranie danych: użyj `fetch` i `useEffect`
-- obsłuż stany (*conditional rendering*):
-  - *loading*,
-    - w momencie, kiedy dane dopiero się pobierają (`fetc` jeszcze trwa).
-    - użytkownik powinien zobaczyć np.  napis „Ładowanie danych…” 
-  - *error*,
-    - gdy pobieranie się nie uda (np. brak internetu, błąd serwera),
-    - aplikacja powinna wyświetlić komunikat „Coś poszło nie tak, spróbuj ponownie” (`error.message`).
-  - *empty*:
-    - pobieranie się udało, ale lista jest pusta (np. filtr nie znalazł żadnych wyników).
-    - Aplikacja powinna wyświetlić napis „Brak wyników do wyświetlenia”.  
+Currently, two official plugins are available:
 
-## Wyświetlanie listy
-- użyj `useState`
-- lista elementów (np. kraje, postacie, filmy)
-- element ma minimum: nazwę + dodatkową informację (np. region, status, rok wydania)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-# Filtrowanie / wyszukiwanie
-- pole tekstowe (input) do wyszukiwania po nazwie
-- select / dropdown z filtrem (np. region, status, gatunek)
-np.
-```jsx
-<input 
-  type="text" 
-  placeholder="Szukaj..." 
-  value={searchText} 
-  onChange={(e) => setSearchText(e.target.value)} 
-/>
+## Expanding the ESLint configuration
 
-//...
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-<select value={filter} onChange={(e) => setFilter(e.target.value)}>
-  <option value="">Wszystkie</option>
-  <option value="Europe">Europa</option>
-  <option value="Asia">Azja</option>
-  <option value="Africa">Afryka</option>
-</select>
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-np.
-- `<input>` – uczeń wpisuje tekst, np. `po` , czyli filtrowanie po krajach zaczynających się od `po` filtruje kraje zawierające po → zostaje Poland.
-- `<select>` – uczeń wybiera region, np. Europa, czyli filtrowanie tylko po krajach europy.
 
-Oba filtry razem – działa jednocześnie: jeśli wpiszesz po i wybierzesz Europa, to zostaje tylko Poland.
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## Szczegóły elementu 
-po kliknięciu na element listy:
-- wyświetl pod listą szczegóły wybranego obiektu (np. flaga, stolica, populacja w krajach)
-- przycisk „Wróć” / „Ukryj szczegóły”
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-
-## Przykład działania
-- Uczeń otwiera aplikację → pokazuje się spinner (loading) (np. `<p> Ładowanie danych ... </p>`).
-- Po załadowaniu → lista elementów (np. kraje świata).
-- Wpisanie w `input` „pol” → zostają tylko kraje, które mają w nazwie „Pol” (np. Poland).
-- Kliknięcie na „Poland” → pod/obok listą pokazują się szczegóły (flaga, stolica, populacja).
-- Kliknięcie „Ukryj szczegóły” → wraca sama lista.
-
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
